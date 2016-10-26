@@ -1,30 +1,25 @@
 <?php
 
-use Phalcon\Loader;
 use Phalcon\Mvc\Micro;
-use Phalcon\Di\FactoryDefault;
 
-$loader = new Loader();
+try {
+    require 'config/loader.php';
+    require 'config/services.php';
 
-$loader->registerNamespaces(
-    array(
-        "Models"    => __DIR__ . '/app/models',
-        "Services"    => __DIR__ . '/app/services',
-        "Controllers"    => __DIR__ . '/app/controllers',
-    )
-);
+    $app = new Micro($di);
 
-$loader->register();
+    $indexController = new \Controllers\IndexController();
+    $app->get('/configuration', array($indexController, "getConfigurationAction"));
 
-$app = new Micro();
+    $app->notFound(function () use ($app) {
+        $app->response->setStatusCode(404, "Not Found")->sendHeaders();
+        echo 'This is crazy, but this page was not found!';
+    });
 
-// Retrieves configuration data
-$indexController = new \Controllers\IndexController();
-$app->get('/configuration', array($indexController, "getConfigurationAction"));
+    $app->handle();
 
-$app->notFound(function () use ($app) {
-    $app->response->setStatusCode(404, "Not Found")->sendHeaders();
-    echo 'This is crazy, but this page was not found!';
-});
-
-$app->handle();
+} catch (Phalcon\Exception $e) {
+    echo $e->getMessage();
+} catch (PDOException $e){
+    echo $e->getMessage();
+}
