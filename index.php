@@ -3,6 +3,7 @@
 use Phalcon\Mvc\Micro;
 
 try {
+    require 'config/config.php';
     require 'config/loader.php';
     require 'config/services.php';
 

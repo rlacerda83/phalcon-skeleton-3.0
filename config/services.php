@@ -10,11 +10,11 @@ $di = new FactoryDefault();
 /**
  * Database connection is created based in the parameters defined in the config file
  */
-$di['db'] = function() use ($config) {
+$di['db'] = function() use($config) {
     return new DbAdapter(array(
-        "host" => '127.0.0.1',
-        "username" => 'root',
-        "password" => '123mudar',
-        "dbname" => 'uello'
+        "host" => $config->get('database')->host,
+        "username" => $config->get('database')->username,
+        "password" => $config->get('database')->password,
+        "dbname" => $config->get('database')->dbname
     ));
 };
